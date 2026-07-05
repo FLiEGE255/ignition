@@ -1,0 +1,8 @@
+{
+  "name": "ignition-platform",
+  "version": "0.0.1",
+  "private": true,
+  "description": "IGNITION Platform",
+  "license": "MIT",
+  "packageManager": "pnpm@11.10.0"
+}
