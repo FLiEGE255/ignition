@@ -1,0 +1,54 @@
+:root {
+  color: #d9d9d9;
+  background: #050505;
+  font-family: Consolas, "Courier New", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: #050505;
+}
+
+.terminal {
+  padding: 40px;
+}
+
+h1 {
+  color: #d40000;
+  margin-bottom: 0;
+}
+
+p {
+  color: silver;
+}
+
+.prompt {
+  display: flex;
+  gap: 10px;
+  margin-top: 30px;
+  font-size: 24px;
+}
+
+.cursor {
+  width: 10px;
+  height: 24px;
+  background: #d40000;
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
