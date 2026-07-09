@@ -1,7 +1,5 @@
-import { Parser } from "./parser.js";
-import { Registry } from "./registry.js";
 import { BootScreen } from "./boot.js";
-import { Terminal } from "./terminal.js";
+import { Application } from "./application.js";
 
 import { HelpCommand } from "../commands/help.js";
 import { StatusCommand } from "../commands/status.js";
@@ -11,108 +9,121 @@ import { HistoryCommand } from "../commands/history.js";
 import { VersionCommand } from "../commands/version.js";
 import { CaptainCommand } from "../commands/captain.js";
 
-import { SystemService } from "../services/system-service.js";
-
 export class GenesisCore {
 
-  async boot() {
+    async boot() {
 
-    console.log("🚀 Genesis Core v0.3.0");
+        console.log("🚀 Genesis OS v0.4.0");
 
-    const app = document.getElementById("app");
+        const appElement = document.getElementById("app");
 
-    const boot = new BootScreen();
+        const boot = new BootScreen();
 
-    app.innerHTML = boot.render();
+        appElement.innerHTML = boot.render();
 
-    const terminalElement = document.getElementById("terminal-output");
+        const terminalElement = document.getElementById("terminal-output");
 
-    this.terminal = new Terminal(terminalElement);
-    this.parser = new Parser();
-    this.registry = new Registry();
-    this.system = new SystemService(this.registry);
+        this.app = new Application(terminalElement);
 
-    // Commands registrieren
-    this.registry.register("help", new HelpCommand());
-    this.registry.register("status", new StatusCommand());
-    this.registry.register("about", new AboutCommand());
-    this.registry.register("clear", new ClearCommand());
-    this.registry.register("history", new HistoryCommand());
-    this.registry.register("version", new VersionCommand());
-    this.registry.register("captain", new CaptainCommand());
+        this.registerCommands();
 
-    // Bootsequenz
-    await this.bootSequence();
+        await this.bootSequence();
 
-    // Terminal-Callback
-    this.terminal.onCommand = (input) => {
+        this.bindTerminal();
 
-      const parsed = this.parser.parse(input);
+    }
 
-      const handler = this.registry.get(parsed.command);
+    registerCommands() {
 
-      if (!handler) {
+        this.app.registry.register("help", new HelpCommand());
+        this.app.registry.register("status", new StatusCommand());
+        this.app.registry.register("about", new AboutCommand());
+        this.app.registry.register("clear", new ClearCommand());
+        this.app.registry.register("history", new HistoryCommand());
+        this.app.registry.register("version", new VersionCommand());
+        this.app.registry.register("captain", new CaptainCommand());
 
-        this.terminal.println("Unknown command: " + parsed.command);
-        this.terminal.println("");
+    }
 
-        return;
+    bindTerminal() {
 
-      }
+        this.app.terminal.onCommand = (input) => {
 
-      const output = handler.execute({
+            const parsed = this.app.parser.parse(input);
 
-        terminal: this.terminal,
-        parser: this.parser,
-        registry: this.registry,
-        system: this.system,
-        args: parsed.args
+            const handler = this.app.registry.get(parsed.command);
 
-      });
+            if (!handler) {
 
-      if (output && output.length > 0) {
+                this.app.terminal.println("Unknown command: " + parsed.command);
+                this.app.terminal.println("");
 
-        output.forEach(line => this.terminal.println(line));
+                return;
 
-        this.terminal.println("");
+            }
 
-      }
+            const output = handler.execute({
 
-    };
+                app: this.app,
+                terminal: this.app.terminal,
+                parser: this.app.parser,
+                registry: this.app.registry,
+                system: this.app.system,
+                args: parsed.args
 
-  }
+            });
 
-  sleep(ms) {
+            if (output && output.length > 0) {
 
-    return new Promise(resolve => setTimeout(resolve, ms));
+                output.forEach(line => this.app.terminal.println(line));
 
-  }
+                this.app.terminal.println("");
 
-  async bootStep(text, delay) {
+            }
 
-    this.terminal.println("[ OK ] " + text);
+        };
 
-    await this.sleep(delay);
+    }
 
-  }
+    sleep(ms) {
 
-  async bootSequence() {
+        return new Promise(resolve => setTimeout(resolve, ms));
 
-    this.terminal.println("Booting Genesis Core...");
-    await this.sleep(1200);
+    }
 
-    this.terminal.println("");
+    async bootStep(text, delay) {
 
-    await this.bootStep("Initializing Kernel", 900);
-    await this.bootStep("Loading Services", 1000);
-    await this.bootStep("Registering Commands", 800);
-    await this.bootStep("Preparing Terminal", 900);
-    await this.bootStep("Authentication Ready", 1200);
+        this.app.terminal.println(
+            text.padEnd(28, ".") + " OK"
+        );
 
-    this.terminal.println("");
-    this.terminal.println("Genesis Core ready.");
-    this.terminal.println("");
+        await this.sleep(delay);
 
-  }
+    }
+
+    async bootSequence() {
+
+        const t = this.app.terminal;
+
+        t.println("Genesis OS Bootloader v0.4.0");
+        t.println("");
+
+        await this.bootStep("Power On", 400);
+        await this.bootStep("Memory Test", 500);
+        await this.bootStep("CPU Check", 450);
+        await this.bootStep("Loading Kernel", 600);
+        await this.bootStep("Loading Services", 500);
+        await this.bootStep("Registering Commands", 500);
+        await this.bootStep("Connecting NODE0", 700);
+        await this.bootStep("Opening Terminal", 500);
+
+        t.println("");
+        t.println("Genesis OS 0.4.0");
+        t.println("Running iGNiTiON Network");
+        t.println("");
+        t.println("READY");
+        t.println("");
+
+    }
 
 }
