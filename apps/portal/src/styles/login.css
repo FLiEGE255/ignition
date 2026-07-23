@@ -1,0 +1,601 @@
+html,
+body,
+#app {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    background: #000;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.login-screen {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    overflow: hidden;
+
+    background: #000;
+
+    font-family:
+        Consolas,
+        "Courier New",
+        monospace;
+
+    color: #d4b800;
+}
+
+
+/* =========================================================
+   MAIN FRAME
+   ========================================================= */
+
+.login-frame {
+    width: 94vw;
+    height: 92vh;
+
+    display: grid;
+
+    grid-template-rows:
+        8%
+        84%
+        8%;
+
+    border: 2px dashed #e51b16;
+
+    background: #000;
+}
+
+
+/* =========================================================
+   COLORS
+   ========================================================= */
+
+.red {
+    color: #e51b16;
+}
+
+.yellow {
+    color: #d4b800;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.login-header {
+    padding: 0 3%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom: 2px dashed #e51b16;
+
+    font-size: clamp(
+        16px,
+        1.45vw,
+        28px
+    );
+
+    white-space: nowrap;
+}
+
+.header-separator {
+    margin: 0 28px;
+
+    color: #e51b16;
+}
+
+
+/* =========================================================
+   MAIN AREA
+   ========================================================= */
+
+.login-main {
+    padding:
+        2.5vh
+        4vw
+        1.5vh;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   CONNECTION INFORMATION
+   ========================================================= */
+
+.connection-section {
+    font-size: clamp(
+        16px,
+        1.35vw,
+        26px
+    );
+
+    line-height: 1.35;
+}
+
+.connection-title {
+    margin-bottom: 2vh;
+}
+
+.connection-row {
+    width: min(
+        700px,
+        60vw
+    );
+
+    display: grid;
+
+    grid-template-columns:
+        220px
+        260px
+        150px;
+
+    align-items: center;
+}
+
+.dots {
+    color: #d0d0d0;
+
+    letter-spacing: 3px;
+
+    overflow: hidden;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   DIVIDER
+   ========================================================= */
+
+.section-divider {
+    width: 100%;
+    height: 0;
+
+    margin:
+        3vh
+        0
+        4vh;
+
+    border-top:
+        2px
+        dashed
+        #e51b16;
+}
+
+
+/* =========================================================
+   AUTHENTICATION AREA
+   ========================================================= */
+
+.auth-section {
+    width: min(
+        1050px,
+        80vw
+    );
+
+    margin: 0 auto;
+}
+
+
+/* USER AUTHENTICATION */
+
+.auth-title {
+    width: 100%;
+
+    margin-bottom: 4vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 18px;
+
+    font-size: clamp(
+        20px,
+        1.8vw,
+        34px
+    );
+
+    white-space: nowrap;
+}
+
+.auth-line {
+    height: 2px;
+
+    flex: 1;
+
+    background: #e51b16;
+}
+
+
+/* =========================================================
+   HANDLE / PASSWORD
+   ========================================================= */
+
+.auth-row {
+    width: 78%;
+
+    margin:
+        0
+        auto
+        2.5vh;
+
+    display: grid;
+
+    grid-template-columns:
+        210px
+        1fr;
+
+    column-gap: 24px;
+
+    align-items: center;
+}
+
+.auth-label {
+    text-align: right;
+
+    font-size: clamp(
+        18px,
+        1.6vw,
+        30px
+    );
+
+    white-space: nowrap;
+}
+
+.auth-label .red {
+    display: inline-block;
+
+    margin-left: 22px;
+}
+
+
+/* INPUT FIELD */
+
+.auth-field {
+    height: clamp(
+        52px,
+        6vh,
+        68px
+    );
+
+    padding:
+        0
+        14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    border:
+        2px
+        dashed
+        #d4b800;
+
+    color: #d4c08a;
+
+    font-size: clamp(
+        17px,
+        1.4vw,
+        27px
+    );
+
+    white-space: nowrap;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   CURSOR
+   ========================================================= */
+
+#handle-value,
+#password-value {
+    display: inline-block;
+
+    flex: 0 0 auto;
+}
+
+.login-cursor {
+    display: inline-block;
+
+    flex: 0 0 auto;
+
+    width: 12px;
+    height: 28px;
+
+    margin-left: 3px;
+
+    background: #ff1c12;
+
+    animation:
+        loginCursorBlink
+        0.8s
+        steps(1)
+        infinite;
+}
+
+.login-cursor.hidden {
+    display: none;
+}
+
+@keyframes loginCursorBlink {
+
+    0%,
+    49% {
+        opacity: 1;
+    }
+
+    50%,
+    100% {
+        opacity: 0;
+    }
+}
+
+
+/* =========================================================
+   CONNECT
+   ========================================================= */
+
+.connect-label {
+    width: 100%;
+
+    margin:
+        3vh
+        auto
+        2.5vh;
+
+    text-align: center;
+
+    font-size: clamp(
+        21px,
+        1.8vw,
+        34px
+    );
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   STATUS BOX
+   ========================================================= */
+
+.login-status {
+    width: 82%;
+
+    height: clamp(
+        52px,
+        6.5vh,
+        72px
+    );
+
+    margin:
+        0
+        auto
+        2.5vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border:
+        2px
+        dashed
+        #e51b16;
+
+    color: #d4c08a;
+
+    font-size: clamp(
+        15px,
+        1.15vw,
+        22px
+    );
+
+    text-align: center;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   AUTHORIZED USERS
+   ========================================================= */
+
+.authorized {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 18px;
+
+    color: #e51b16;
+
+    font-size: clamp(
+        15px,
+        1.15vw,
+        22px
+    );
+
+    white-space: nowrap;
+}
+
+.authorized-dots {
+    letter-spacing: 4px;
+}
+
+
+/* =========================================================
+   CSS SECURITY LOCK
+   ========================================================= */
+
+.lock {
+    position: relative;
+
+    display: inline-block;
+
+    width: 24px;
+    height: 20px;
+
+    flex: 0 0 24px;
+
+    border: 2px solid #e51b16;
+}
+
+
+/* Schlossbügel */
+
+.lock::before {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    bottom: 100%;
+
+    width: 12px;
+    height: 11px;
+
+    transform: translateX(-50%);
+
+    border: 2px solid #e51b16;
+    border-bottom: 0;
+
+    border-radius:
+        7px
+        7px
+        0
+        0;
+}
+
+
+/* Schlüsselloch */
+
+.lock::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+    top: 6px;
+
+    width: 4px;
+    height: 7px;
+
+    transform: translateX(-50%);
+
+    background: #e51b16;
+
+    clip-path: polygon(
+        50% 0,
+        100% 35%,
+        75% 55%,
+        75% 100%,
+        25% 100%,
+        25% 55%,
+        0 35%
+    );
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.login-footer {
+    padding: 0 3%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-top:
+        2px
+        dashed
+        #e51b16;
+
+    font-size: clamp(
+        16px,
+        1.35vw,
+        26px
+    );
+
+    white-space: nowrap;
+}
+
+.footer-value {
+    margin-left: 18px;
+}
+
+.online-dot {
+    display: inline-block;
+
+    width: 11px;
+    height: 11px;
+
+    margin:
+        0
+        20px;
+
+    border-radius: 50%;
+
+    background: #e51b16;
+}
+
+.online {
+    color: #22c400;
+}
+
+
+/* =========================================================
+   SMALLER SCREENS
+   ========================================================= */
+
+@media (max-height: 800px) {
+
+    .login-frame {
+        height: 95vh;
+    }
+
+    .section-divider {
+        margin:
+            2vh
+            0
+            2.5vh;
+    }
+
+    .auth-title {
+        margin-bottom: 2.5vh;
+    }
+
+    .auth-row {
+        margin-bottom: 2vh;
+    }
+
+    .connect-label {
+        margin:
+            2vh
+            auto;
+    }
+
+    .login-status {
+        margin-bottom: 1.5vh;
+    }
+}

@@ -1,128 +1,74 @@
 import { BootScreen } from "./boot.js";
 import { Application } from "./application.js";
 
-import { HelpCommand } from "../commands/help.js";
-import { StatusCommand } from "../commands/status.js";
-import { AboutCommand } from "../commands/about.js";
-import { ClearCommand } from "../commands/clear.js";
-import { HistoryCommand } from "../commands/history.js";
-import { VersionCommand } from "../commands/version.js";
-import { CaptainCommand } from "../commands/captain.js";
+import { FullscreenScreen } from "../modules/fullscreen-screen.js";
+import { BbsHomeScreen } from "../modules/bbs-home-screen.js";
+import { LoginScreen } from "../modules/login-screen.js";
 
 export class GenesisCore {
 
     async boot() {
 
-        console.log("🚀 Genesis OS v0.4.0");
-
         const appElement = document.getElementById("app");
 
+        // Bootscreen anzeigen
         const boot = new BootScreen();
-
         appElement.innerHTML = boot.render();
 
+        // Terminal initialisieren
         const terminalElement = document.getElementById("terminal-output");
 
         this.app = new Application(terminalElement);
 
-        this.registerCommands();
+        this.app.logger.info("Genesis OS v0.4.0-alpha.1");
 
-        await this.bootSequence();
+        // Standard-Commands registrieren
+        this.app.commands.registerDefaults();
 
-        this.bindTerminal();
+        // Bootsequenz
+        await this.app.boot.run();
 
-    }
+        // Fullscreen-Hinweis anzeigen
+        const fullscreen = new FullscreenScreen();
+        appElement.innerHTML = fullscreen.render();
 
-    registerCommands() {
+        // ENTER -> BBS Home
+        document.addEventListener("keydown", async function fullscreenHandler(event) {
 
-        this.app.registry.register("help", new HelpCommand());
-        this.app.registry.register("status", new StatusCommand());
-        this.app.registry.register("about", new AboutCommand());
-        this.app.registry.register("clear", new ClearCommand());
-        this.app.registry.register("history", new HistoryCommand());
-        this.app.registry.register("version", new VersionCommand());
-        this.app.registry.register("captain", new CaptainCommand());
-
-    }
-
-    bindTerminal() {
-
-        this.app.terminal.onCommand = (input) => {
-
-            const parsed = this.app.parser.parse(input);
-
-            const handler = this.app.registry.get(parsed.command);
-
-            if (!handler) {
-
-                this.app.terminal.println("Unknown command: " + parsed.command);
-                this.app.terminal.println("");
-
+            if (event.key !== "Enter") {
                 return;
-
             }
 
-            const output = handler.execute({
+            document.removeEventListener("keydown", fullscreenHandler);
 
-                app: this.app,
-                terminal: this.app.terminal,
-                parser: this.app.parser,
-                registry: this.app.registry,
-                system: this.app.system,
-                args: parsed.args
+            document.querySelector(".fullscreen-screen").style.opacity = "0";
+
+            await new Promise(resolve => setTimeout(resolve, 150));
+
+            const home = new BbsHomeScreen();
+
+            appElement.innerHTML = home.render();
+
+            await home.start();
+
+            // ENTER oder 1 -> Login
+            document.addEventListener("keydown", async function homeHandler(event) {
+
+                if (event.key !== "Enter" && event.key !== "1") {
+                    return;
+                }
+
+                document.removeEventListener("keydown", homeHandler);
+
+                const login = new LoginScreen();
+
+                appElement.innerHTML = login.render();
+
+                await login.start();
 
             });
 
-            if (output && output.length > 0) {
-
-                output.forEach(line => this.app.terminal.println(line));
-
-                this.app.terminal.println("");
-
-            }
-
-        };
-
-    }
-
-    sleep(ms) {
-
-        return new Promise(resolve => setTimeout(resolve, ms));
-
-    }
-
-    async bootStep(text, delay) {
-
-        this.app.terminal.println(
-            text.padEnd(28, ".") + " OK"
-        );
-
-        await this.sleep(delay);
-
-    }
-
-    async bootSequence() {
-
-        const t = this.app.terminal;
-
-        t.println("Genesis OS Bootloader v0.4.0");
-        t.println("");
-
-        await this.bootStep("Power On", 400);
-        await this.bootStep("Memory Test", 500);
-        await this.bootStep("CPU Check", 450);
-        await this.bootStep("Loading Kernel", 600);
-        await this.bootStep("Loading Services", 500);
-        await this.bootStep("Registering Commands", 500);
-        await this.bootStep("Connecting NODE0", 700);
-        await this.bootStep("Opening Terminal", 500);
-
-        t.println("");
-        t.println("Genesis OS 0.4.0");
-        t.println("Running iGNiTiON Network");
-        t.println("");
-        t.println("READY");
-        t.println("");
+        });
 
     }
 

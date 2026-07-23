@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # IGNITION Platform
 
 > Build with quality. Build with purpose. Build for the future.
@@ -24,7 +23,3 @@ IGNITION is a modular knowledge platform designed for long-term maintainability,
 ---
 
 gET rEADY fOR tAKE oFF.
-=======
-# ignition
-The Genesis OS powering the iGNiTiON platform.
->>>>>>> c68f958fb7896ebc68e52c69fd04ff7cfaa91c48
