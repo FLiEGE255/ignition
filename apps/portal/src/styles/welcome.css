@@ -1,0 +1,305 @@
+html,
+body,
+#app {
+    margin: 0;
+
+    width: 100%;
+    height: 100%;
+
+    overflow: hidden;
+
+    background: #000;
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+
+.welcome-screen {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #000;
+
+    font-family:
+        Consolas,
+        "Courier New",
+        monospace;
+
+    color: #d4b800;
+}
+
+
+/* =========================================================
+   FRAME
+   ========================================================= */
+
+.welcome-frame {
+    width: 94vw;
+    height: 92vh;
+
+    display: grid;
+
+    grid-template-rows:
+        8%
+        84%
+        8%;
+
+    border:
+        2px
+        dashed
+        #e51b16;
+
+    background: #000;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.welcome-header {
+    padding: 0 3%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom:
+        2px
+        dashed
+        #e51b16;
+
+    font-size: clamp(
+        16px,
+        1.45vw,
+        28px
+    );
+}
+
+
+.welcome-red {
+    color: #e51b16;
+}
+
+
+.welcome-yellow {
+    color: #d4b800;
+}
+
+
+/* =========================================================
+   MAIN
+   ========================================================= */
+
+.welcome-main {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   SESSION
+   ========================================================= */
+
+.welcome-line {
+    margin-bottom: 3vh;
+
+    color: #d4b800;
+
+    font-size: clamp(
+        17px,
+        1.4vw,
+        27px
+    );
+}
+
+
+.welcome-divider {
+    width: min(
+        900px,
+        65vw
+    );
+
+    height: 0;
+
+    margin-bottom: 5vh;
+
+    border-top:
+        2px
+        dashed
+        #e51b16;
+}
+
+
+/* =========================================================
+   WELCOME
+   ========================================================= */
+
+.welcome-title {
+    color: #d4b800;
+
+    font-size: clamp(
+        28px,
+        3vw,
+        58px
+    );
+
+    letter-spacing: 4px;
+}
+
+
+.welcome-handle {
+    margin-top: 1vh;
+
+    color: #e51b16;
+
+    font-size: clamp(
+        44px,
+        5vw,
+        90px
+    );
+
+    font-weight: bold;
+
+    letter-spacing: 8px;
+}
+
+
+/* =========================================================
+   MESSAGE
+   ========================================================= */
+
+.welcome-message {
+    margin-top: 5vh;
+
+    color: #d4b800;
+
+    font-size: clamp(
+        16px,
+        1.35vw,
+        26px
+    );
+}
+
+
+.welcome-status {
+    margin-top: 1.5vh;
+
+    color: #e51b16;
+
+    font-size: clamp(
+        15px,
+        1.2vw,
+        23px
+    );
+}
+
+
+/* =========================================================
+   CONTINUE
+   ========================================================= */
+
+.welcome-continue {
+    margin-top: 6vh;
+
+    color: #e51b16;
+
+    font-size: clamp(
+        18px,
+        1.55vw,
+        30px
+    );
+
+    animation:
+        welcomeBlink
+        1.1s
+        steps(1)
+        infinite;
+}
+
+
+@keyframes welcomeBlink {
+
+    0%,
+    55% {
+        opacity: 1;
+    }
+
+    56%,
+    100% {
+        opacity: 0.25;
+    }
+}
+
+
+/* =========================================================
+   BUILD
+   ========================================================= */
+
+.welcome-hidden {
+    visibility: hidden;
+}
+
+
+.welcome-visible {
+    visibility: visible;
+
+    animation:
+        welcomeBuild
+        0.08s
+        steps(1)
+        both;
+}
+
+
+@keyframes welcomeBuild {
+
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.welcome-footer {
+    padding: 0 3%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-top:
+        2px
+        dashed
+        #e51b16;
+
+    font-size: clamp(
+        16px,
+        1.35vw,
+        26px
+    );
+}
+
+
+.welcome-online {
+    color: #22c400;
+}

@@ -2,27 +2,39 @@ import "../styles/login.css";
 
 import { SessionService } from "../services/session-service.js";
 
+
 export class LoginScreen {
 
-    constructor() {
+    constructor(onSuccess = null) {
+
         this.handle = "";
         this.password = "";
+
         this.activeField = "handle";
+
         this.keyHandler = null;
 
-        this.sessionService = new SessionService();
+        this.onSuccess = onSuccess;
+
+        this.sessionService =
+            new SessionService();
     }
 
 
     render() {
+
         return `
             <div class="login-screen">
 
                 <div class="login-frame boot-hidden">
 
                     <header class="login-header boot-part">
+
                         <div>
-                            <span class="red">iGNiTiON NETWORK</span>
+
+                            <span class="red">
+                                iGNiTiON NETWORK
+                            </span>
 
                             <span class="header-separator">
                                 //
@@ -31,11 +43,14 @@ export class LoginScreen {
                             <span class="yellow">
                                 NODE0
                             </span>
+
                         </div>
+
 
                         <div class="red">
                             ONLINE SINCE 1986
                         </div>
+
                     </header>
 
 
@@ -49,8 +64,12 @@ export class LoginScreen {
                                 ESTABLISHING SECURE CONNECTION...
                             </div>
 
+
                             <div class="connection-row">
-                                <span>REMOTE NODE</span>
+
+                                <span>
+                                    REMOTE NODE
+                                </span>
 
                                 <span class="dots">
                                     ................
@@ -59,10 +78,15 @@ export class LoginScreen {
                                 <span class="red">
                                     NODE0
                                 </span>
+
                             </div>
 
+
                             <div class="connection-row">
-                                <span>PROTOCOL</span>
+
+                                <span>
+                                    PROTOCOL
+                                </span>
 
                                 <span class="dots">
                                     ................
@@ -71,10 +95,15 @@ export class LoginScreen {
                                 <span class="red">
                                     GENESIS
                                 </span>
+
                             </div>
 
+
                             <div class="connection-row">
-                                <span>ENCRYPTION</span>
+
+                                <span>
+                                    ENCRYPTION
+                                </span>
 
                                 <span class="dots">
                                     ................
@@ -83,6 +112,7 @@ export class LoginScreen {
                                 <span>
                                     ACTIVE
                                 </span>
+
                             </div>
 
                         </section>
@@ -95,9 +125,7 @@ export class LoginScreen {
 
                         <section class="auth-section">
 
-                            <div
-                                class="auth-title boot-part"
-                            >
+                            <div class="auth-title boot-part">
 
                                 <span class="auth-line"></span>
 
@@ -110,14 +138,18 @@ export class LoginScreen {
                             </div>
 
 
-                            <div
-                                class="auth-row boot-part"
-                            >
+                            <div class="auth-row boot-part">
 
                                 <div class="auth-label">
+
                                     HANDLE
-                                    <span class="red">:</span>
+
+                                    <span class="red">
+                                        :
+                                    </span>
+
                                 </div>
+
 
                                 <div class="auth-field">
 
@@ -135,14 +167,18 @@ export class LoginScreen {
                             </div>
 
 
-                            <div
-                                class="auth-row boot-part"
-                            >
+                            <div class="auth-row boot-part">
 
                                 <div class="auth-label">
+
                                     PASSWORD
-                                    <span class="red">:</span>
+
+                                    <span class="red">
+                                        :
+                                    </span>
+
                                 </div>
+
 
                                 <div class="auth-field">
 
@@ -173,9 +209,7 @@ export class LoginScreen {
                             ></div>
 
 
-                            <div
-                                class="authorized boot-part"
-                            >
+                            <div class="authorized boot-part">
 
                                 <span
                                     class="lock"
@@ -206,11 +240,10 @@ export class LoginScreen {
                     </main>
 
 
-                    <footer
-                        class="login-footer boot-part"
-                    >
+                    <footer class="login-footer boot-part">
 
                         <div>
+
                             <span>
                                 SESSION:
                             </span>
@@ -218,10 +251,12 @@ export class LoginScreen {
                             <span class="footer-value">
                                 WAITING
                             </span>
+
                         </div>
 
 
                         <div>
+
                             <span>
                                 NODE0
                             </span>
@@ -231,6 +266,7 @@ export class LoginScreen {
                             <span class="online">
                                 ONLINE
                             </span>
+
                         </div>
 
                     </footer>
@@ -242,96 +278,94 @@ export class LoginScreen {
     }
 
 
-    /*
-     * =====================================================
-     * SCREEN START / BUILD SEQUENCE
-     * =====================================================
-     */
-
     async start() {
 
         const frame =
-            document.querySelector(".login-frame");
+            document.querySelector(
+                ".login-frame"
+            );
+
 
         if (!frame) {
+
+            console.error(
+                "LOGIN: Frame wurde nicht gefunden."
+            );
+
             return;
         }
 
 
         /*
-         * Äußerer Rahmen erscheint zuerst.
+         * =====================================================
+         * LOGIN BUILD SEQUENCE
+         * =====================================================
+         *
+         * Desktop und Mobile verwenden denselben Aufbau.
+         *
+         * Der Frame wird zuerst sichtbar gemacht.
+         * Danach erscheinen alle .boot-part Elemente
+         * nacheinander.
          */
 
-        frame.classList.remove("boot-hidden");
-
-
-        await this.wait(150);
+        frame.classList.remove(
+            "boot-hidden"
+        );
 
 
         /*
-         * Alle einzelnen Bildschirmteile holen.
+         * Safari und dem Browser einen vollständigen Frame
+         * geben, bevor die einzelnen Teile eingeblendet werden.
          */
 
-        const parts =
-            Array.from(
-                document.querySelectorAll(".boot-part")
-            );
+        await new Promise(resolve => {
 
+            requestAnimationFrame(() => {
 
-        /*
-         * Sicherheit:
-         * zunächst wirklich alles verstecken.
-         */
-
-        parts.forEach(part => {
-            part.classList.add("boot-part-hidden");
+                requestAnimationFrame(
+                    resolve
+                );
+            });
         });
 
-
-        /*
-         * Kleine Pause nach dem Rahmen.
-         */
 
         await this.wait(180);
 
 
+        const parts =
+            Array.from(
+                document.querySelectorAll(
+                    ".boot-part"
+                )
+            );
+
+
         /*
-         * NODE0 Screen Stück für Stück aufbauen.
+         * NODE0 Login Stück für Stück aufbauen.
          */
 
         for (const part of parts) {
-
-            part.classList.remove(
-                "boot-part-hidden"
-            );
 
             part.classList.add(
                 "boot-part-visible"
             );
 
 
-            /*
-             * Kleine zufällige Terminal-Verzögerung.
-             */
-
             await this.wait(
-                90 + Math.random() * 100
+                140 + Math.random() * 120
             );
         }
 
 
         /*
-         * Kurze Pause vor Eingabefreigabe.
+         * Kurze Pause nach dem vollständigen Aufbau.
          */
 
-        await this.wait(250);
+        await this.wait(300);
 
 
         /*
-         * Erst JETZT:
-         *
-         * Tastatur aktivieren
-         * und roten Cursor anzeigen.
+         * Eingabe freigeben.
          */
 
         this.startInput();
@@ -339,22 +373,17 @@ export class LoginScreen {
 
 
     wait(ms) {
+
         return new Promise(resolve =>
             setTimeout(resolve, ms)
         );
     }
 
 
-    /*
-     * =====================================================
-     * KEYBOARD INPUT
-     * =====================================================
-     */
-
     startInput() {
 
         /*
-         * Doppelten EventListener verhindern.
+         * Eventuell vorhandenen Handler entfernen.
          */
 
         if (this.keyHandler) {
@@ -379,10 +408,12 @@ export class LoginScreen {
 
                 event.preventDefault();
 
+
                 this.activeField =
                     this.activeField === "handle"
                         ? "password"
                         : "handle";
+
 
                 this.updateDisplay();
 
@@ -419,7 +450,7 @@ export class LoginScreen {
 
 
             /*
-             * Sondertasten ignorieren.
+             * Nur echte Zeichen übernehmen.
              */
 
             if (event.key.length !== 1) {
@@ -437,6 +468,7 @@ export class LoginScreen {
                     return;
                 }
 
+
                 this.handle += event.key;
             }
 
@@ -450,6 +482,7 @@ export class LoginScreen {
                 if (this.password.length >= 32) {
                     return;
                 }
+
 
                 this.password += event.key;
             }
@@ -469,16 +502,10 @@ export class LoginScreen {
     }
 
 
-    /*
-     * =====================================================
-     * ENTER
-     * =====================================================
-     */
-
     handleEnter() {
 
         /*
-         * HANDLE bestätigt.
+         * HANDLE -> PASSWORD
          */
 
         if (this.activeField === "handle") {
@@ -488,7 +515,9 @@ export class LoginScreen {
             }
 
 
-            this.activeField = "password";
+            this.activeField =
+                "password";
+
 
             this.updateDisplay();
 
@@ -497,7 +526,7 @@ export class LoginScreen {
 
 
         /*
-         * PASSWORD bestätigt.
+         * PASSWORD leer?
          */
 
         if (this.password.length === 0) {
@@ -505,40 +534,38 @@ export class LoginScreen {
         }
 
 
+        /*
+         * Login starten.
+         */
+
         this.submitLogin();
     }
 
-
-    /*
-     * =====================================================
-     * BACKSPACE
-     * =====================================================
-     */
 
     handleBackspace() {
 
         if (this.activeField === "handle") {
 
             this.handle =
-                this.handle.slice(0, -1);
+                this.handle.slice(
+                    0,
+                    -1
+                );
         }
 
         else {
 
             this.password =
-                this.password.slice(0, -1);
+                this.password.slice(
+                    0,
+                    -1
+                );
         }
 
 
         this.updateDisplay();
     }
 
-
-    /*
-     * =====================================================
-     * DISPLAY
-     * =====================================================
-     */
 
     updateDisplay() {
 
@@ -547,15 +574,18 @@ export class LoginScreen {
                 "handle-value"
             );
 
+
         const passwordValue =
             document.getElementById(
                 "password-value"
             );
 
+
         const handleCursor =
             document.getElementById(
                 "handle-cursor"
             );
+
 
         const passwordCursor =
             document.getElementById(
@@ -574,7 +604,7 @@ export class LoginScreen {
 
 
         /*
-         * HANDLE
+         * HANDLE anzeigen.
          */
 
         handleValue.textContent =
@@ -582,7 +612,7 @@ export class LoginScreen {
 
 
         /*
-         * PASSWORD maskieren
+         * PASSWORD maskieren.
          */
 
         passwordValue.textContent =
@@ -592,7 +622,7 @@ export class LoginScreen {
 
 
         /*
-         * Cursor
+         * Cursor HANDLE.
          */
 
         handleCursor.classList.toggle(
@@ -601,18 +631,16 @@ export class LoginScreen {
         );
 
 
+        /*
+         * Cursor PASSWORD.
+         */
+
         passwordCursor.classList.toggle(
             "hidden",
             this.activeField !== "password"
         );
     }
 
-
-    /*
-     * =====================================================
-     * LOGIN
-     * =====================================================
-     */
 
     async submitLogin() {
 
@@ -628,8 +656,7 @@ export class LoginScreen {
 
 
         /*
-         * Während CONNECT:
-         * keine Tastatureingaben.
+         * Tastatureingabe während Login sperren.
          */
 
         document.removeEventListener(
@@ -639,13 +666,14 @@ export class LoginScreen {
 
 
         /*
-         * Cursor aus.
+         * Cursor ausblenden.
          */
 
         const handleCursor =
             document.getElementById(
                 "handle-cursor"
             );
+
 
         const passwordCursor =
             document.getElementById(
@@ -657,13 +685,14 @@ export class LoginScreen {
             "hidden"
         );
 
+
         passwordCursor?.classList.add(
             "hidden"
         );
 
 
         /*
-         * Verbindung simulieren.
+         * NODE0 Verbindung.
          */
 
         status.textContent =
@@ -674,7 +703,7 @@ export class LoginScreen {
 
 
         /*
-         * SessionService
+         * Session Service.
          */
 
         const result =
@@ -717,24 +746,18 @@ export class LoginScreen {
         await this.wait(1200);
 
 
-        console.log(
-            "Authenticated session:",
-            result.session
-        );
-
-
         /*
-         * NÄCHSTER SCHRITT:
-         *
-         * WELCOME BACK, FLiEGE
-         *
-         * ->
-         *
-         * HAUSORDNUNG
-         *
-         * ->
-         *
-         * MISSION CONTROL
+         * Übergabe zurück an GenesisCore.
          */
+
+        if (
+            typeof this.onSuccess ===
+            "function"
+        ) {
+
+            await this.onSuccess(
+                result.session
+            );
+        }
     }
 }

@@ -9,67 +9,256 @@ export class GenesisCore {
 
     async boot() {
 
-        const appElement = document.getElementById("app");
+        const appElement =
+            document.getElementById("app");
 
-        // Bootscreen anzeigen
-        const boot = new BootScreen();
-        appElement.innerHTML = boot.render();
 
-        // Terminal initialisieren
-        const terminalElement = document.getElementById("terminal-output");
+        /*
+         * =====================================================
+         * DEVICE
+         * =====================================================
+         */
 
-        this.app = new Application(terminalElement);
+        const isMobile =
+            window.matchMedia(
+                "(max-width: 768px), (pointer: coarse)"
+            ).matches;
 
-        this.app.logger.info("Genesis OS v0.4.0-alpha.1");
 
-        // Standard-Commands registrieren
+        /*
+         * =====================================================
+         * BOOT
+         * =====================================================
+         */
+
+        const boot =
+            new BootScreen();
+
+        appElement.innerHTML =
+            boot.render();
+
+
+        const terminalElement =
+            document.getElementById("terminal-output");
+
+
+        this.app =
+            new Application(terminalElement);
+
+
+        this.app.logger.info(
+            "Genesis OS v0.4.0-alpha.1"
+        );
+
+
         this.app.commands.registerDefaults();
 
-        // Bootsequenz
+
         await this.app.boot.run();
 
-        // Fullscreen-Hinweis anzeigen
-        const fullscreen = new FullscreenScreen();
-        appElement.innerHTML = fullscreen.render();
 
-        // ENTER -> BBS Home
-        document.addEventListener("keydown", async function fullscreenHandler(event) {
+        /*
+         * =====================================================
+         * OPEN BBS HOME
+         * =====================================================
+         */
 
-            if (event.key !== "Enter") {
-                return;
-            }
+        const openBbsHome = async () => {
 
-            document.removeEventListener("keydown", fullscreenHandler);
+            const home =
+                new BbsHomeScreen();
 
-            document.querySelector(".fullscreen-screen").style.opacity = "0";
 
-            await new Promise(resolve => setTimeout(resolve, 150));
-
-            const home = new BbsHomeScreen();
-
-            appElement.innerHTML = home.render();
+            appElement.innerHTML =
+                home.render();
 
             await home.start();
 
-            // ENTER oder 1 -> Login
-            document.addEventListener("keydown", async function homeHandler(event) {
 
-                if (event.key !== "Enter" && event.key !== "1") {
+            /*
+             * Kurze Sperre, damit ein eventuell noch laufendes
+             * Pointer-Event nicht direkt den Login öffnet.
+             */
+
+            await new Promise(resolve =>
+                setTimeout(resolve, 300)
+            );
+
+
+            let homeTransitionRunning =
+                false;
+
+
+            /*
+             * =================================================
+             * OPEN LOGIN
+             * =================================================
+             */
+
+            const openLogin = async () => {
+
+                if (homeTransitionRunning) {
                     return;
                 }
 
-                document.removeEventListener("keydown", homeHandler);
 
-                const login = new LoginScreen();
+                homeTransitionRunning =
+                    true;
 
-                appElement.innerHTML = login.render();
+
+                document.removeEventListener(
+                    "keydown",
+                    homeKeyHandler
+                );
+
+                document.removeEventListener(
+                    "pointerup",
+                    homePointerHandler
+                );
+
+
+                home.destroy();
+
+
+                const login =
+                    new LoginScreen();
+
+
+                appElement.innerHTML =
+                    login.render();
+
 
                 await login.start();
+            };
 
-            });
 
-        });
+            const homeKeyHandler =
+                async (event) => {
 
+                    if (
+                        event.key !== "Enter" &&
+                        event.key !== "1"
+                    ) {
+                        return;
+                    }
+
+
+                    await openLogin();
+                };
+
+
+            const homePointerHandler =
+                async () => {
+
+                    if (!isMobile) {
+                        return;
+                    }
+
+
+                    await openLogin();
+                };
+
+
+            document.addEventListener(
+                "keydown",
+                homeKeyHandler
+            );
+
+
+            document.addEventListener(
+                "pointerup",
+                homePointerHandler
+            );
+        };
+
+
+        /*
+         * =====================================================
+         * MOBILE
+         * =====================================================
+         */
+
+        if (isMobile) {
+
+            await openBbsHome();
+
+            return;
+        }
+
+
+        /*
+         * =====================================================
+         * DESKTOP
+         * =====================================================
+         */
+
+        const fullscreen =
+            new FullscreenScreen();
+
+
+        appElement.innerHTML =
+            fullscreen.render();
+
+
+        let fullscreenTransitionRunning =
+            false;
+
+
+        const openDesktopBbsHome =
+            async () => {
+
+                if (fullscreenTransitionRunning) {
+                    return;
+                }
+
+
+                fullscreenTransitionRunning =
+                    true;
+
+
+                document.removeEventListener(
+                    "keydown",
+                    fullscreenKeyHandler
+                );
+
+
+                const fullscreenElement =
+                    document.querySelector(
+                        ".fullscreen-screen"
+                    );
+
+
+                if (fullscreenElement) {
+
+                    fullscreenElement.style.opacity =
+                        "0";
+                }
+
+
+                await new Promise(resolve =>
+                    setTimeout(resolve, 150)
+                );
+
+
+                await openBbsHome();
+            };
+
+
+            const fullscreenKeyHandler =
+                async (event) => {
+
+                    if (event.key !== "Enter") {
+                        return;
+                    }
+
+
+                    await openDesktopBbsHome();
+                };
+
+
+        document.addEventListener(
+            "keydown",
+            fullscreenKeyHandler
+        );
     }
-
 }
